@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Opening</title>
+<link href="https://fonts.googleapis.com/css2?family=Netflix+Sans:wght@400;700&family=Bebas+Neue&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  /* ══════════════════════════════
+     PHASE 1 — N STING
+  ══════════════════════════════ */
+  #n-sting {
+    position: fixed; inset: 0;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+    animation: stingExit 0.5s ease 2.4s forwards;
+  }
+
+  .n-wrap {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* The N letter */
+  .big-n {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(120px, 22vw, 240px);
+    color: #E50914;
+    line-height: 1;
+    opacity: 0;
+    transform: scale(1.6);
+    animation: nSlam 0.45s cubic-bezier(0.22,1,0.36,1) 0.3s forwards;
+    text-shadow:
+      0 0 60px rgba(229,9,20,0.8),
+      0 0 120px rgba(229,9,20,0.4),
+      0 4px 30px rgba(0,0,0,0.9);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Red shimmer sweep across the N */
+  .n-shimmer {
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(105deg, transparent 30%, rgba(255,120,120,0.5) 50%, transparent 70%);
+    animation: shimmerSweep 0.6s ease 0.85s forwards;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Glow pulse after slam */
+  .n-glow {
+    position: absolute;
+    width: clamp(140px, 25vw, 280px);
+    height: clamp(140px, 25vw, 280px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(229,9,20,0.5) 0%, transparent 70%);
+    opacity: 0;
+    animation: glowPulse 1.2s ease 0.7s forwards;
+    pointer-events: none;
+  }
+
+  /* Red bar that appears under N */
+  .n-bar {
+    position: absolute;
+    bottom: -6px; left: 50%;
+    transform: translateX(-50%);
+    height: 4px;
+    background: #E50914;
+    width: 0;
+    animation: barExpand 0.5s cubic-bezier(0.16,1,0.3,1) 0.75s forwards;
+    box-shadow: 0 0 12px rgba(229,9,20,0.8);
+  }
+
+  @keyframes nSlam {
+    from { opacity: 0; transform: scale(1.6); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes shimmerSweep {
+    from { left: -60%; }
+    to   { left: 160%; }
+  }
+  @keyframes glowPulse {
+    0%   { opacity: 0; transform: scale(0.8); }
+    40%  { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0; transform: scale(1.4); }
+  }
+  @keyframes barExpand {
+    from { width: 0; }
+    to   { width: clamp(120px, 22vw, 240px); }
+  }
+  @keyframes stingExit {
+    to { opacity: 0; pointer-events: none; }
+  }
+
+  /* ══════════════════════════════
+     PHASE 2 — HERO / MAIN SCREEN
+  ══════════════════════════════ */
+  #main {
+    position: fixed; inset: 0;
+    opacity: 0;
+    animation: mainFadeIn 1.2s ease 2.5s forwards;
+  }
+  @keyframes mainFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Hero image — replace background with your Cloudinary URL */
+  .hero {
+    position: absolute; inset: 0;
+    background-image: url('https://res.cloudinary.com/ddrpctqpl/image/upload/v1778997922/file_000000002a1871f5a6092525c2f12a0e_o78b4m.png');
+    background-size: cover;
+    background-position: center top;
+    /* Ken Burns slow zoom */
+    animation: kenBurns 20s ease-out 2.5s forwards;
+  }
+  @keyframes kenBurns {
+    from { transform: scale(1.08); }
+    to   { transform: scale(1); }
+  }
+
+  /* Dark gradient at bottom so text is readable */
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.1) 70%, transparent 100%),
+      linear-gradient(to right, rgba(0,0,0,0.7) 0%, transparent 60%);
+  }
+
+  /* Top fade */
+  .hero-top-fade {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+  }
+
+  /* ── NETFLIX-STYLE TOP BAR ── */
+  .topbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 4vw;
+    opacity: 0;
+    animation: fadeDown 0.8s ease 3.2s forwards;
+  }
+  .topbar-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: #E50914;
+    letter-spacing: 0.05em;
+  }
+  .topbar-nav {
+    display: flex; gap: 24px; list-style: none;
+  }
+  .topbar-nav li a {
+    font-size: 13px; font-weight: 400;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  .topbar-nav li a:hover { color: #fff; }
+  .topbar-right {
+    display: flex; gap: 18px; align-items: center;
+  }
+  .topbar-right svg { color: rgba(255,255,255,0.8); cursor: pointer; }
+
+  /* ── MAIN CONTENT ── */
+  .content {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    z-index: 5;
+    padding: 0 4vw 6vh;
+  }
+
+  /* "Netflix Original" label */
+  .netflix-label {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 3.5s forwards;
+  }
+  .n-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: #E50914;
+    line-height: 1;
+  }
+  .label-text {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+  }
+
+  /* Big movie title */
+  .movie-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 9vw, 110px);
+    color: #fff;
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+    opacity: 0;
+    animation: titleBlast 0.9s cubic-bezier(0.16,1,0.3,1) 3.7s forwards;
+  }
+
+  /* Description */
+  .movie-desc {
+    font-size: clamp(12px, 1.4vw, 15px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.7);
+    max-width: 480px;
+    line-height: 1.6;
+    margin-top: 14px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 4.1s forwards;
+  }
+
+  /* Buttons row */
+  .btn-row {
+    display: flex; gap: 12px; margin-top: 22px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 4.4s forwards;
+  }
+
+  .btn-play {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 12px 28px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-play:hover { background: rgba(255,255,255,0.85); transform: scale(1.03); }
+  .btn-play svg { width: 20px; height: 20px; fill: #000; flex-shrink: 0; }
+
+  .btn-info {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(109,109,110,0.7);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-info:hover { background: rgba(109,109,110,0.5); transform: scale(1.03); }
+  .btn-info svg { width: 20px; height: 20px; fill: #fff; }
+
+  /* Rating / meta row */
+  .meta-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 4.7s forwards;
+  }
+  .match { color: #46d369; font-weight: 700; font-size: 14px; }
+  .meta-tag {
+    border: 1px solid rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+  .meta-plain {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    font-weight: 300;
+  }
+
+  /* Mute button — bottom right */
+  .mute-btn {
+    position: absolute;
+    bottom: 6vh; right: 4vw;
+    z-index: 10;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.6);
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    animation: fadeIn 0.7s ease 5s forwards;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .mute-btn:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+  .mute-btn svg { width: 16px; height: 16px; fill: #fff; }
+
+  /* ── KEYFRAMES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes titleBlast {
+    from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
+    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ PHASE 1: N STING ═══ -->
+<div id="n-sting">
+  <div class="n-wrap">
+    <div class="n-glow"></div>
+    <div class="big-n">N</div>
+    <div class="n-shimmer"></div>
+    <div class="n-bar"></div>
+  </div>
+</div>
+
+<!-- ═══ PHASE 2: MAIN SCREEN ═══ -->
+<div id="main">
+
+  <!-- Hero background (swap with your image) -->
+  <div class="hero"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-top-fade"></div>
+
+  <!-- Top nav -->
+  <nav class="topbar">
+    <div class="topbar-logo">N</div>
+    <ul class="topbar-nav">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">TV Shows</a></li>
+      <li><a href="#">Movies</a></li>
+      <li><a href="#">New & Popular</a></li>
+      <li><a href="#">My List</a></li>
+    </ul>
+    <div class="topbar-right">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content">
+    <div class="netflix-label">
+      <span class="n-badge">N</span>
+      <span class="label-text">Original Film</span>
+    </div>
+
+    <h1 class="movie-title">YOUR<br>MOVIE TITLE</h1>
+
+    <p class="movie-desc">
+      A powerful story of love, loss, and redemption. When everything falls apart, one choice changes everything — forever.
+    </p>
+
+    <div class="btn-row">
+      <button class="btn-play">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Play
+      </button>
+      <button class="btn-info">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        More Info
+      </button>
+    </div>
+
+    <div class="meta-row">
+      <span class="match">97% Match</span>
+      <span class="meta-plain">2025</span>
+      <span class="meta-tag">TV-MA</span>
+      <span class="meta-plain">2h 14m</span>
+      <span class="meta-tag">HD</span>
+    </div>
+  </div>
+
+  <!-- Mute button -->
+  <button class="mute-btn" id="muteBtn" title="Toggle sound">
+    <svg id="muteIcon" viewBox="0 0 24 24">
+      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+    </svg>
+  </button>
+
+  <!-- Hidden audio — swap src with your Cloudinary audio URL -->
+  <audio id="bgAudio" loop>
+    <source src="https://res.cloudinary.com/ddrpctqpl/video/upload/v1778997836/Pink_White_-_Frank_Ocean_bfihoi.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<script>
+  // Auto-play audio after sting (browser may require interaction)
+  const audio = document.getElementById('bgAudio');
+  const muteBtn = document.getElementById('muteBtn');
+  const muteIcon = document.getElementById('muteIcon');
+
+  let muted = false;
+
+  setTimeout(() => {
+    audio.volume = 0;
+    audio.play().then(() => {
+      // Fade in volume
+      let vol = 0;
+      const fade = setInterval(() => {
+        vol = Math.min(vol + 0.02, 0.85);
+        audio.volume = vol;
+        if (vol >= 0.85) clearInterval(fade);
+      }, 80);
+    }).catch(() => {
+      // Autoplay blocked — user needs to interact first
+    });
+  }, 2600);
+
+  muteBtn.addEventListener('click', () => {
+    muted = !muted;
+    audio.muted = muted;
+    muteIcon.innerHTML = muted
+      ? `<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>`
+      : `<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>`;
+  });
+</script>
+</body>
+</html>
